@@ -1,0 +1,47 @@
+name: Module Open
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - "v*"
+
+
+jobs:
+  module-open:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install
+        run: |
+          cd module-open
+          yarn cache clean
+          yarn install --network-timeout 1000000
+
+      - name: Build
+        run: |
+          cd module-open
+          yarn build
+
+      - name: Compress
+        run: |
+          cd module-open/dist
+          npx bestzip ../module-open.zip ./*
+
+      - name: Upload
+        uses: bayssmekanique/action-simple-file-upload@v1
+        with:
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          host: ${{ secrets.FTP_HOST }}
+          port: ${{ secrets.FTP_PORT }}
+          src: ./module-open/module-open.zip
+          dest: ./builds/${{ github.sha }}/modules/module-open.zip

@@ -1,0 +1,99 @@
+name: Module Shortcut
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - "v*"
+
+jobs:
+  module-shortcut:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ] # [ ubuntu-latest, windows-latest, macos-latest ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Setup Linux Dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get install -y software-properties-common libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
+
+      - name: Rebuild iohook
+        run: |
+          git clone https://github.com/wilix-team/iohook.git --branch=v0.9.3
+          cd iohook
+          npm i --ignore-scripts
+          npm run build --msvs_version=2019
+
+      - name: Upload iohook prebuild Linux
+        if: startsWith(matrix.os, 'ubuntu')
+        uses: bayssmekanique/action-simple-file-upload@v1
+        with:
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          host: ${{ secrets.FTP_HOST }}
+          port: ${{ secrets.FTP_PORT }}
+          src: ./iohook/prebuilds/iohook-v0.9.3-node-v72-linux-x64.tar.gz
+          dest: ./builds/${{ github.sha }}/modules/module-shortcut/node-v72-linux-x64.tar.gz
+
+      - name: Upload iohook prebuild MacOS
+        if: startsWith(matrix.os, 'macos')
+        uses: bayssmekanique/action-simple-file-upload@v1
+        with:
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          host: ${{ secrets.FTP_HOST }}
+          port: ${{ secrets.FTP_PORT }}
+          src: ./iohook/prebuilds/iohook-v0.9.3-node-v72-darwin-x64.tar.gz
+          dest: ./builds/${{ github.sha }}/modules/module-shortcut/node-v72-darwin-x64.tar.gz
+
+      - name: Upload iohook prebuild Windows
+        if: startsWith(matrix.os, 'windows')
+        uses: bayssmekanique/action-simple-file-upload@v1
+        with:
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          host: ${{ secrets.FTP_HOST }}
+          port: ${{ secrets.FTP_PORT }}
+          src: ./iohook/prebuilds/iohook-v0.9.3-node-v72-win32-x64.tar.gz
+          dest: ./builds/${{ github.sha }}/modules/module-shortcut/node-v72-win32-x64.tar.gz
+
+      - name: Install
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          cd module-shortcut
+          yarn cache clean
+          yarn install --network-timeout 1000000
+
+      - name: Build
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          cd module-shortcut
+          yarn build
+
+      - name: Compress
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          cd module-shortcut/dist
+          npx bestzip ../module-shortcut.zip ./*
+
+      - name: Upload
+        if: startsWith(matrix.os, 'ubuntu')
+        uses: bayssmekanique/action-simple-file-upload@v1
+        with:
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          host: ${{ secrets.FTP_HOST }}
+          port: ${{ secrets.FTP_PORT }}
+          src: ./module-shortcut/module-shortcut.zip
+          dest: ./builds/${{ github.sha }}/modules/module-shortcut/module-shortcut.zip

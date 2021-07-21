@@ -1,0 +1,42 @@
+name: Docs
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - "v*"
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install
+        run: |
+          cd docs
+          yarn cache clean
+          yarn install --network-timeout 1000000
+
+      - name: Build
+        run: |
+          cd docs
+          yarn build
+
+      - name: Upload
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: ${{ secrets.FTP_PORT }}
+          local-dir: ./docs/build/
+          server-dir: ./docs/
