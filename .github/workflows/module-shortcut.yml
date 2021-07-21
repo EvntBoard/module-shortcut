@@ -71,20 +71,17 @@ jobs:
       - name: Install
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          cd module-shortcut
           yarn cache clean
           yarn install --network-timeout 1000000
 
       - name: Build
         if: startsWith(matrix.os, 'ubuntu')
-        run: |
-          cd module-shortcut
-          yarn build
+        run: yarn build
 
       - name: Compress
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          cd module-shortcut/dist
+          cd ./dist
           npx bestzip ../module-shortcut.zip ./*
 
       - name: Upload
@@ -95,5 +92,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           host: ${{ secrets.FTP_HOST }}
           port: ${{ secrets.FTP_PORT }}
-          src: ./module-shortcut/module-shortcut.zip
+          src: ./module-shortcut.zip
           dest: ./builds/${{ github.sha }}/modules/module-shortcut/module-shortcut.zip
