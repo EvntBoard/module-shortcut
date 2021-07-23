@@ -1,27 +1,16 @@
 import process from 'process';
 import ioHook from "iohook";
-import { EvntComClient, EvntComServer } from "evntboard-communicate";
+import { getEvntComClientFromChildProcess, getEvntComServerFromChildProcess } from "evntboard-communicate";
 import { getCodeFromName } from "./utils";
 
 // parse params
 const { name: NAME, customName: CUSTOM_NAME, config: CONFIG } = JSON.parse(process.argv[2]);
 const EMITTER = CUSTOM_NAME || NAME;
 
-// create Client and Server COM
-const evntComClient = new EvntComClient(
-    (cb: any) => process.on('message', cb),
-    (data: any) => process.send(data),
-);
+const evntComClient = getEvntComClientFromChildProcess();
+const evntComServer = getEvntComServerFromChildProcess();
 
-const evntComServer = new EvntComServer();
-
-evntComServer.registerOnData((cb: any) => process.on('message', async (data) => {
-    const toSend = await cb(data);
-    if (toSend) process.send(toSend);
-}));
-
-evntComServer.expose("newEvent", () => {});
-evntComServer.expose("load", () => {
+const load = () => {
     try {
         console.log(CONFIG)
         CONFIG.forEach((keys: string) => {
@@ -31,13 +20,9 @@ evntComServer.expose("load", () => {
         console.log(e)
     }
     ioHook.start(false);
-});
-evntComServer.expose("unload", () => {});
-evntComServer.expose("reload", () => {});
-
+}
 
 const shortcuts: Map<string, number> = new Map<string, number>()
-
 
 const registerShortCut = (keysString: string) => {
     const keyStringArray: string[] = keysString.split('+')
@@ -67,5 +52,6 @@ const unregisterShortCut = (keysString: string) => {
     }
 }
 
+evntComServer.expose("load", load);
 evntComServer.expose("registerShortCut", registerShortCut);
 evntComServer.expose("unregisterShortCut", unregisterShortCut);
