@@ -2,6 +2,7 @@ import os from "os";
 import { findKey } from "lodash";
 import keycodeNamesWin from "./keycodes/win32";
 import keycodeNamesMac from "./keycodes/darwin";
+import keycodeNamesLinux from "./keycodes/linux";
 
 export const getCurrentLayout = (): { [key: number]: string } => {
   switch (os.platform()) {
@@ -9,9 +10,11 @@ export const getCurrentLayout = (): { [key: number]: string } => {
       return keycodeNamesWin;
     case "darwin":
       return keycodeNamesMac;
+    case "linux":
+      return keycodeNamesLinux;
     default:
-      console.error(`No layout for ${os.platform()} ! Fallback to Windows `);
-      return keycodeNamesWin;
+      console.error(`No layout for ${os.platform()} ! Fallback to Linux `);
+      return keycodeNamesLinux;
   }
 };
 

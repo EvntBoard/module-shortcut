@@ -12,8 +12,7 @@ const evntComServer = getEvntComServerFromChildProcess();
 
 const load = () => {
     try {
-        console.log(CONFIG)
-        CONFIG.forEach((keys: string) => {
+        CONFIG?.forEach((keys: string) => {
             registerShortCut(keys)
         })
     } catch (e) {
@@ -23,6 +22,7 @@ const load = () => {
 }
 
 const shortcuts: Map<string, number> = new Map<string, number>()
+const shortcutsNumber: Map<string, number> = new Map<string, number>()
 
 const registerShortCut = (keysString: string) => {
     const keyStringArray: string[] = keysString.split('+')
@@ -52,6 +52,38 @@ const unregisterShortCut = (keysString: string) => {
     }
 }
 
+// NUMBERS
+
+const registerShortCutNumber = (keys: number[]) => {
+    const keyString: string = keys.join(',')
+    let idHook = shortcutsNumber.get(keyString);
+    if (idHook === undefined) {
+        idHook = ioHook.registerShortcut(keys, () => {
+            evntComClient?.newEvent(`shortcut:${keyString}`, null, { emitter: EMITTER })
+        });
+        shortcutsNumber.set(keyString, idHook);
+    } else {
+        console.debug(
+            `shortcut:${keyString} already registered !`
+        );
+    }
+}
+
+const unregisterShortCutNumber = (keys: number[]) => {
+    const keyString: string = keys.join(',')
+    const idHook = shortcutsNumber.get(keyString);
+    if (idHook !== undefined) {
+        shortcuts.delete(keyString);
+        return ioHook.unregisterShortcut(idHook);
+    } else {
+        console.debug(
+            `shortcut:${keys} is not registered !`
+        );
+    }
+}
+
 evntComServer.expose("load", load);
 evntComServer.expose("registerShortCut", registerShortCut);
 evntComServer.expose("unregisterShortCut", unregisterShortCut);
+evntComServer.expose("registerShortCutNumber", registerShortCutNumber);
+evntComServer.expose("unregisterShortCutNumber", unregisterShortCutNumber);
