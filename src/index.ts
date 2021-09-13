@@ -1,3 +1,5 @@
+import {isArray, isString} from "lodash";
+
 require("dotenv").config();
 import { EvntComNode } from "evntcom-js/dist/node";
 import ioHook from "iohook";
@@ -16,9 +18,15 @@ const evntCom = new EvntComNode({
 
 evntCom.onOpen = async () => {
     try {
-        await Promise.all(KEYS?.map(async (keys: string) => {
-            await registerShortCut(keys)
-        }))
+        if (isArray(KEYS)) {
+            await Promise.all(KEYS?.map(async (keys: string) => {
+                await registerShortCut(keys)
+            }))
+        } else if (isString(KEYS)) {
+            await Promise.all(KEYS.split(',')?.map(async (keys: string) => {
+                await registerShortCut(keys)
+            }))
+        }
     } catch (e) {
         console.log(e)
     }
