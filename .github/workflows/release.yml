@@ -51,7 +51,7 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:linux
           cd ../
-          mkdir -p module-shortcut/build/linux-x64/shortcut/builds/node-v72-linux-x64/build/Release
+          mkdir -p module-shortcut/build/linux-x64/shortcut/node_modules/iohook/builds/node-v72-linux-x64/build/Release
           cp iohook/build/Release/iohook.node module-shortcut/build/linux-x64/shortcut/node_modules/iohook/builds/node-v72-linux-x64/build/Release/iohook.node
           cp iohook/build/Release/uiohook.so module-shortcut/build/linux-x64/shortcut/node_modules/iohook/builds/node-v72-linux-x64/build/Release/uiohook.so
 
@@ -75,7 +75,7 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:macos
           cd ../
-          mkdir -p module-shortcut/build/macos-x64/shortcut/builds/node-v72-darwin-x64/build/Release
+          mkdir -p module-shortcut/build/macos-x64/shortcut/node_modules/iohook/builds/node-v72-darwin-x64/build/Release
           cp iohook/build/Release/iohook.node module-shortcut/build/macos-x64/shortcut/node_modules/iohook/builds/node-v72-darwin-x64/build/Release/iohook.node
           cp iohook/build/Release/uiohook.dylib module-shortcut/build/macos-x64/shortcut/node_modules/iohook/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
 
