@@ -51,6 +51,7 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:linux
           cd ../
+          npx tree-node-cli -I "node_modules" -a ./
           mkdir -p module-shortcut/linux-x64/builds/node-v72-linux-x64/build/Release
           cp iohook/build/Release/iohook.node module-shortcut/linux-x64/builds/node-v72-linux-x64/build/Release/iohook.node
           cp iohook/build/Release/uiohook.so module-shortcut/linux-x64/builds/node-v72-linux-x64/build/Release/uiohook.so
