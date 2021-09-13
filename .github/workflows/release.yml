@@ -51,10 +51,9 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:linux
           cd ../
-          npx rimraf module-shortcut/dist/builds/node-v72-win32-x64/
-          npx rimraf module-shortcut/dist/builds/node-v72-darwin-x64/
-          cp iohook/build/Release/iohook.node module-shortcut/dist/builds/node-v72-linux-x64/build/Release/iohook.node
-          cp iohook/build/Release/uiohook.so module-shortcut/dist/builds/node-v72-linux-x64/build/Release/uiohook.so
+          mkdir -p module-shortcut/linux-x64/builds/node-v72-linux-x64/build/Release
+          cp iohook/build/Release/iohook.node module-shortcut/linux-x64/builds/node-v72-linux-x64/build/Release/iohook.node
+          cp iohook/build/Release/uiohook.so module-shortcut/linux-x64/builds/node-v72-linux-x64/build/Release/uiohook.so
 
       - name: Build Windows x64
         if: startsWith(matrix.os, 'windows')
@@ -64,37 +63,38 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:win
           cd ../
-          npx rimraf module-shortcut/dist/builds/node-v72-darwin-x64/
-          npx rimraf module-shortcut/dist/builds/node-v72-linux-x64/
-          copy iohook/build/Release/iohook.node module-shortcut/dist/builds/node-v72-win32-x64/build/Release/iohook.node
-          copy iohook/build/Release/uiohook.dll module-shortcut/dist/builds/node-v72-win32-x64/build/Release/uiohook.dll
+          mkdir -p module-shortcut/linux-x64/builds/node-v72-win32-x64/build/Release
+          copy iohook/build/Release/iohook.node module-shortcut/win-x64/builds/node-v72-win32-x64/build/Release/iohook.node
+          copy iohook/build/Release/uiohook.dll module-shortcut/win-x64/builds/node-v72-win32-x64/build/Release/uiohook.dll
 
       - name: Build MacOS x64
-        if: startsWith(matrix.os, 'windows')
+        if: startsWith(matrix.os, 'macos')
         run: |
           cd module-shortcut
           yarn
           yarn prebuild:x64
           yarn build:x64:macos
           cd ../
-          npx rimraf module-shortcut/dist/builds/node-v72-win32-x64/
-          npx rimraf module-shortcut/dist/builds/node-v72-linux-x64/
-          cp iohook/build/Release/iohook.node module-shortcut/dist/builds/node-v72-darwin-x64/build/Release/iohook.node
-          cp iohook/build/Release/uiohook.dylib module-shortcut/dist/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
+          mkdir -p module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release
+          copy iohook/build/Release/iohook.node module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release/iohook.node
+          copy iohook/build/Release/uiohook.dylib module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
 
       - name: Artefact Macos x64
+        if: startsWith(matrix.os, 'macos')
         uses: actions/upload-artifact@v2
         with:
           name: Twitch MacOS x64
           path: ./module-shortcut/build/macos-x64
 
       - name: Artefact Linux x64
+        if: startsWith(matrix.os, 'ubuntu')
         uses: actions/upload-artifact@v2
         with:
           name: Twitch Linux x64
           path: ./module-shortcut/build/linux-x64
 
       - name: Artefact Win x64
+        if: startsWith(matrix.os, 'windows')
         uses: actions/upload-artifact@v2
         with:
           name: Twitch Windows x64
