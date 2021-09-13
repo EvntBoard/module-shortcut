@@ -83,21 +83,21 @@ jobs:
         if: startsWith(matrix.os, 'macos')
         uses: actions/upload-artifact@v2
         with:
-          name: Twitch MacOS x64
+          name: Shortcut MacOS x64
           path: ./module-shortcut/build/macos-x64
 
       - name: Artefact Linux x64
         if: startsWith(matrix.os, 'ubuntu')
         uses: actions/upload-artifact@v2
         with:
-          name: Twitch Linux x64
+          name: Shortcut Linux x64
           path: ./module-shortcut/build/linux-x64
 
       - name: Artefact Win x64
         if: startsWith(matrix.os, 'windows')
         uses: actions/upload-artifact@v2
         with:
-          name: Twitch Windows x64
+          name: Shortcut Windows x64
           path: ./module-shortcut/build/win-x64
 
       - name: Pack Linux x64
