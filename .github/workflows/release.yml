@@ -51,10 +51,9 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:linux
           cd ../
-          npx tree-node-cli -I "node_modules" -a ./
-          mkdir -p module-shortcut/linux-x64/builds/node-v72-linux-x64/build/Release
-          cp iohook/build/Release/iohook.node module-shortcut/linux-x64/builds/node-v72-linux-x64/build/Release/iohook.node
-          cp iohook/build/Release/uiohook.so module-shortcut/linux-x64/builds/node-v72-linux-x64/build/Release/uiohook.so
+          mkdir -p module-shortcut/build/linux-x64/shortcut/builds/node-v72-linux-x64/build/Release
+          cp iohook/build/Release/iohook.node module-shortcut/build/linux-x64/shortcut/builds/node-v72-linux-x64/build/Release/iohook.node
+          cp iohook/build/Release/uiohook.so module-shortcut/build/linux-x64/shortcut/builds/node-v72-linux-x64/build/Release/uiohook.so
 
       - name: Build Windows x64
         if: startsWith(matrix.os, 'windows')
@@ -64,9 +63,9 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:win
           cd ../
-          mkdir -p module-shortcut/linux-x64/builds/node-v72-win32-x64/build/Release
-          copy iohook/build/Release/iohook.node module-shortcut/win-x64/builds/node-v72-win32-x64/build/Release/iohook.node
-          copy iohook/build/Release/uiohook.dll module-shortcut/win-x64/builds/node-v72-win32-x64/build/Release/uiohook.dll
+          mkdir -p module-shortcut/build/win-x64/shortcut/builds/node-v72-win32-x64/build/Release
+          copy iohook/build/Release/iohook.node module-shortcut/build/win-x64/shortcut/builds/node-v72-win32-x64/build/Release/iohook.node
+          copy iohook/build/Release/uiohook.dll module-shortcut/build/win-x64/shortcut/builds/node-v72-win32-x64/build/Release/uiohook.dll
 
       - name: Build MacOS x64
         if: startsWith(matrix.os, 'macos')
@@ -76,9 +75,9 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:macos
           cd ../
-          mkdir -p module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release
-          cp iohook/build/Release/iohook.node module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release/iohook.node
-          cp iohook/build/Release/uiohook.dylib module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
+          mkdir -p module-shortcut/build/macos-x64/shortcut/builds/node-v72-darwin-x64/build/Release
+          cp iohook/build/Release/iohook.node module-shortcut/build/macos-x64/shortcut/builds/node-v72-darwin-x64/build/Release/iohook.node
+          cp iohook/build/Release/uiohook.dylib module-shortcut/build/macos-x64/shortcut/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
 
       - name: Artefact Macos x64
         if: startsWith(matrix.os, 'macos')
