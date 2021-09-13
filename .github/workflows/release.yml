@@ -76,8 +76,8 @@ jobs:
           yarn build:x64:macos
           cd ../
           mkdir -p module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release
-          copy iohook/build/Release/iohook.node module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release/iohook.node
-          copy iohook/build/Release/uiohook.dylib module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
+          cp iohook/build/Release/iohook.node module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release/iohook.node
+          cp iohook/build/Release/uiohook.dylib module-shortcut/macos-x64/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
 
       - name: Artefact Macos x64
         if: startsWith(matrix.os, 'macos')
