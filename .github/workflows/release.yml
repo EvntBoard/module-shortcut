@@ -107,13 +107,13 @@ jobs:
           npx bestzip ../../../shortcut-linux-x64.zip .
 
       - name: Pack Win x64
-        if: startsWith(github.ref, 'refs/tags/') startsWith(matrix.os, 'windows')
+        if: startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows')
         run: |
           cd module-shortcut/build/win-x64
           npx bestzip ../../../shortcut-win-x64.zip .
 
       - name: Pack Macos x64
-        if: startsWith(github.ref, 'refs/tags/') startsWith(matrix.os, 'macos')
+        if: startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'macos')
         run: |
           cd module-shortcut/build/macos-x64
           npx bestzip ../../../shortcut-macos-x64.zip .
