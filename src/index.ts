@@ -1,20 +1,24 @@
-import process from 'process';
+require("dotenv").config();
+import { EvntComNode } from "evntcom-js/dist/node";
 import ioHook from "iohook";
-import { getEvntComClientFromChildProcess, getEvntComServerFromChildProcess } from "evntboard-communicate";
 import { getCodeFromName } from "./utils";
 
-// parse params
-const { name: NAME, customName: CUSTOM_NAME, config: CONFIG } = JSON.parse(process.argv[2]);
-const EMITTER = CUSTOM_NAME || NAME;
+const NAME: string = process.env.EVNTBOARD_NAME || "shortcut";
+const HOST: string = process.env.EVNTBOARD_HOST || "localhost";
+const PORT: number = process.env.EVNTBOARD_PORT ? parseInt(process.env.EVNTBOARD_PORT) : 5001;
+const KEYS: any = process.env.EVNTBOARD_CONFIG_KEYS;
 
-const evntComClient = getEvntComClientFromChildProcess();
-const evntComServer = getEvntComServerFromChildProcess();
+const evntCom = new EvntComNode({
+    name: NAME,
+    port: PORT,
+    host: HOST,
+});
 
-const load = () => {
+evntCom.onOpen = async () => {
     try {
-        CONFIG?.forEach((keys: string) => {
-            registerShortCut(keys)
-        })
+        await Promise.all(KEYS?.map(async (keys: string) => {
+            await registerShortCut(keys)
+        }))
     } catch (e) {
         console.log(e)
     }
@@ -24,13 +28,17 @@ const load = () => {
 const shortcuts: Map<string, number> = new Map<string, number>()
 const shortcutsNumber: Map<string, number> = new Map<string, number>()
 
-const registerShortCut = (keysString: string) => {
+const registerShortCut = async (keysString: string) => {
     const keyStringArray: string[] = keysString.split('+')
     let idHook = shortcuts.get(keysString);
     if (idHook === undefined) {
         const keysCode = keyStringArray.map((i) => getCodeFromName(i));
         idHook = ioHook.registerShortcut(keysCode, () => {
-            evntComClient?.newEvent(`shortcut:${keysString}`, null, { emitter: EMITTER })
+            evntCom.callMethod("newEvent", [
+                `shortcut:${keysString}`,
+                null,
+                {emitter: NAME},
+            ]);
         });
         shortcuts.set(keysString, idHook);
     } else {
@@ -40,7 +48,7 @@ const registerShortCut = (keysString: string) => {
     }
 }
 
-const unregisterShortCut = (keysString: string) => {
+const unregisterShortCut = async (keysString: string) => {
     const idHook = shortcuts.get(keysString);
     if (idHook !== undefined) {
         shortcuts.delete(keysString);
@@ -54,12 +62,16 @@ const unregisterShortCut = (keysString: string) => {
 
 // NUMBERS
 
-const registerShortCutNumber = (keys: number[]) => {
+const registerShortCutNumber = async (keys: number[]) => {
     const keyString: string = keys.join(',')
     let idHook = shortcutsNumber.get(keyString);
     if (idHook === undefined) {
         idHook = ioHook.registerShortcut(keys, () => {
-            evntComClient?.newEvent(`shortcut:${keyString}`, null, { emitter: EMITTER })
+            evntCom.callMethod("newEvent", [
+                `shortcut:${keyString}`,
+                null,
+                {emitter: NAME},
+            ]);
         });
         shortcutsNumber.set(keyString, idHook);
     } else {
@@ -69,7 +81,7 @@ const registerShortCutNumber = (keys: number[]) => {
     }
 }
 
-const unregisterShortCutNumber = (keys: number[]) => {
+const unregisterShortCutNumber = async (keys: number[]) => {
     const keyString: string = keys.join(',')
     const idHook = shortcutsNumber.get(keyString);
     if (idHook !== undefined) {
@@ -82,8 +94,7 @@ const unregisterShortCutNumber = (keys: number[]) => {
     }
 }
 
-evntComServer.expose("load", load);
-evntComServer.expose("registerShortCut", registerShortCut);
-evntComServer.expose("unregisterShortCut", unregisterShortCut);
-evntComServer.expose("registerShortCutNumber", registerShortCutNumber);
-evntComServer.expose("unregisterShortCutNumber", unregisterShortCutNumber);
+evntCom.expose("registerShortCut", registerShortCut);
+evntCom.expose("unregisterShortCut", unregisterShortCut);
+evntCom.expose("registerShortCutNumber", registerShortCutNumber);
+evntCom.expose("unregisterShortCutNumber", unregisterShortCutNumber);

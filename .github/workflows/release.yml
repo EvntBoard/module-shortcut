@@ -1,6 +1,7 @@
 name: Module Shortcut
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "v*.*.*"
@@ -42,53 +43,80 @@ jobs:
 
       ## IOHOOK PART
 
-      - name: Build
+      - name: Build Linux x64
+        if: startsWith(matrix.os, 'ubuntu')
         run: |
           cd module-shortcut
           yarn
-          yarn build
-
-      - name: Copy bin Windows
-        if: startsWith(matrix.os, 'windows')
-        run: |
-          npx rimraf module-shortcut/dist/builds/node-v72-darwin-x64/
-          npx rimraf module-shortcut/dist/builds/node-v72-linux-x64/
-          copy iohook/build/Release/iohook.node module-shortcut/dist/builds/node-v72-win32-x64/build/Release/iohook.node
-          copy iohook/build/Release/uiohook.dll module-shortcut/dist/builds/node-v72-win32-x64/build/Release/uiohook.dll
-
-      - name: Copy bin Mac
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          npx rimraf module-shortcut/dist/builds/node-v72-win32-x64/
-          npx rimraf module-shortcut/dist/builds/node-v72-linux-x64/
-          cp iohook/build/Release/iohook.node module-shortcut/dist/builds/node-v72-darwin-x64/build/Release/iohook.node
-          cp iohook/build/Release/uiohook.dylib module-shortcut/dist/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
-
-      - name: Copy bin Linux
-        if: startsWith(matrix.os, 'ubuntu')
-        run: |
+          yarn prebuild:x64
+          yarn build:x64:linux
+          cd ../
           npx rimraf module-shortcut/dist/builds/node-v72-win32-x64/
           npx rimraf module-shortcut/dist/builds/node-v72-darwin-x64/
           cp iohook/build/Release/iohook.node module-shortcut/dist/builds/node-v72-linux-x64/build/Release/iohook.node
           cp iohook/build/Release/uiohook.so module-shortcut/dist/builds/node-v72-linux-x64/build/Release/uiohook.so
 
-      - name: Pack Linux
-        if: startsWith(matrix.os, 'ubuntu')
-        run: |
-          cd module-shortcut/dist
-          npx bestzip ../../module-shortcut-linux.zip .
-
-      - name: Pack Windows
+      - name: Build Windows x64
         if: startsWith(matrix.os, 'windows')
         run: |
-          cd module-shortcut/dist
-          npx bestzip ../../module-shortcut-windows.zip .
+          cd module-shortcut
+          yarn
+          yarn prebuild:x64
+          yarn build:x64:win
+          cd ../
+          npx rimraf module-shortcut/dist/builds/node-v72-darwin-x64/
+          npx rimraf module-shortcut/dist/builds/node-v72-linux-x64/
+          copy iohook/build/Release/iohook.node module-shortcut/dist/builds/node-v72-win32-x64/build/Release/iohook.node
+          copy iohook/build/Release/uiohook.dll module-shortcut/dist/builds/node-v72-win32-x64/build/Release/uiohook.dll
 
-      - name: Pack Macos
-        if: startsWith(matrix.os, 'macos')
+      - name: Build MacOS x64
+        if: startsWith(matrix.os, 'windows')
         run: |
-          cd module-shortcut/dist
-          npx bestzip ../../module-shortcut-macos.zip .
+          cd module-shortcut
+          yarn
+          yarn prebuild:x64
+          yarn build:x64:macos
+          cd ../
+          npx rimraf module-shortcut/dist/builds/node-v72-win32-x64/
+          npx rimraf module-shortcut/dist/builds/node-v72-linux-x64/
+          cp iohook/build/Release/iohook.node module-shortcut/dist/builds/node-v72-darwin-x64/build/Release/iohook.node
+          cp iohook/build/Release/uiohook.dylib module-shortcut/dist/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
+
+      - name: Artefact Macos x64
+        uses: actions/upload-artifact@v2
+        with:
+          name: Twitch MacOS x64
+          path: ./module-shortcut/build/macos-x64
+
+      - name: Artefact Linux x64
+        uses: actions/upload-artifact@v2
+        with:
+          name: Twitch Linux x64
+          path: ./module-shortcut/build/linux-x64
+
+      - name: Artefact Win x64
+        uses: actions/upload-artifact@v2
+        with:
+          name: Twitch Windows x64
+          path: ./module-shortcut/build/win-x64
+
+      - name: Pack Linux x64
+        if: startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'ubuntu')
+        run: |
+          cd module-shortcut/build/linux-x64
+          npx bestzip ../../../shortcut-linux-x64.zip .
+
+      - name: Pack Win x64
+        if: startsWith(github.ref, 'refs/tags/') startsWith(matrix.os, 'windows')
+        run: |
+          cd module-shortcut/build/win-x64
+          npx bestzip ../../../shortcut-win-x64.zip .
+
+      - name: Pack Macos x64
+        if: startsWith(github.ref, 'refs/tags/') startsWith(matrix.os, 'macos')
+        run: |
+          cd module-shortcut/build/macos-x64
+          npx bestzip ../../../shortcut-macos-x64.zip .
 
       - name: Release
         uses: softprops/action-gh-release@v1
