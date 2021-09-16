@@ -6,32 +6,21 @@
   "bin": "dist/index.js",
   "scripts": {
     "start": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/index.ts",
-    "prestart:prod": "tsc -p .",
-    "start:prod": "node dist/index.js",
-    "prebuild:x64": "tsc -p .",
-    "prebuild:arm64": "tsc -p .",
-    "build:x64": "npm-run-all build:x64:*",
-    "build:arm64": "npm-run-all build:x64:*",
-    "build:x64:linux": "cross-env PKG_CACHE_PATH=./pkg-cache pkg . --output ./build/linux-x64/shortcut/shortcut --targets node12-linux-x64",
-    "build:x64:macos": "cross-env PKG_CACHE_PATH=./pkg-cache pkg . --output ./build/macos-x64/shortcut/shortcut --targets node12-macos-x64",
-    "build:x64:win": "cross-env PKG_CACHE_PATH=./pkg-cache pkg . --output ./build/win-x64/shortcut/shortcut --targets node12-win-x64",
-    "build:arm64:linux": "cross-env PKG_CACHE_PATH=./pkg-cache pkg . --output ./build/linux-arm64/shortcut/shortcut --targets node12-linux-arm64",
-    "build:arm64:macos": "cross-env PKG_CACHE_PATH=./pkg-cache pkg . --output ./build/macos-arm64/shortcut/shortcut --targets node12-macos-arm64",
-    "build:arm64:win": "cross-env PKG_CACHE_PATH=./pkg-cache pkg . --output ./build/win-arm64/shortcut/shortcut --targets node12-win-arm64",
-    "lint": "prettier --write .",
+    "build": "ncc build src/index.ts -m -o dist/shortcut",
+    "lint": "prettier --write src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "pkg": {
-    "scripts": [
-      "dist/**/*.js",
-      "node_modules/evntcom-js/dist/**/*.js"
-    ]
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvntBoard/module-shortcut.git"
   },
-  "keywords": [],
   "author": "",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EvntBoard/module-shortcut/issues"
+  },
+  "homepage": "https://github.com/EvntBoard/module-shortcut#readme",
   "dependencies": {
-    "dotenv": "^10.0.0",
     "evntcom-js": "https://github.com/EvntBoard/evntcom-js.git",
     "iohook": "^0.9.3",
     "lodash": "^4.17.21"
@@ -39,19 +28,15 @@
   "devDependencies": {
     "@types/lodash": "^4.14.170",
     "@types/node": "^15.6.1",
-    "cross-env": "^7.0.3",
     "nodemon": "^2.0.12",
-    "npm-run-all": "^4.1.5",
-    "pkg": "^5.3.2",
     "prettier": "^2.4.0",
-    "ts-loader": "^9.2.5",
     "ts-node": "^10.2.1",
     "tslint-plugin-prettier": "^2.3.0",
     "typescript": "^4.4.3"
   },
   "iohook": {
     "targets": [
-      "node-72"
+      "node-83"
     ],
     "platforms": [
       "win32",
