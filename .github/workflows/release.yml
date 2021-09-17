@@ -34,9 +34,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y software-properties-common libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
 
+## --branch=v0.9.3
       - name: Rebuild iohook
         run: |
-          git clone https://github.com/wilix-team/iohook.git --branch=v0.9.3 iohook
+          git clone https://github.com/wilix-team/iohook.git iohook
           cd iohook
           npm i --ignore-scripts
           npm run build --msvs_version=2019
