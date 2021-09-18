@@ -493,7 +493,7 @@ eslint-plugin-prettier@^2.2.0:
 
 "evntcom-js@https://github.com/EvntBoard/evntcom-js.git":
   version "1.0.0"
-  resolved "https://github.com/EvntBoard/evntcom-js.git#b3eb9c95e9c3ca8ed99f7f66a9282ce216cd48f4"
+  resolved "https://github.com/EvntBoard/evntcom-js.git#fb83b2720e317087fa3288c47308139182dfe28a"
   dependencies:
     "@msgpack/msgpack" "^2.7.1"
     uuid "^8.3.2"
