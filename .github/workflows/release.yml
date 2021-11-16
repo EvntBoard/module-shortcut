@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: 12
 
+      - id: get_version
+        uses: battila7/get-version-action@v2
+
       ## IOHOOK PART
 
       - name: Setup Linux Dependencies
@@ -52,9 +55,9 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:linux
           cd ../
-          mkdir -p module-shortcut/build/linux-x64/shortcut/node_modules/iohook/builds/node-v72-linux-x64/build/Release
-          cp iohook/build/Release/iohook.node module-shortcut/build/linux-x64/shortcut/node_modules/iohook/builds/node-v72-linux-x64/build/Release/iohook.node
-          cp iohook/build/Release/uiohook.so module-shortcut/build/linux-x64/shortcut/node_modules/iohook/builds/node-v72-linux-x64/build/Release/uiohook.so
+          mkdir -p module-shortcut/build/linux-x64/module/node_modules/iohook/builds/node-v72-linux-x64/build/Release
+          cp iohook/build/Release/iohook.node module-shortcut/build/linux-x64/module/node_modules/iohook/builds/node-v72-linux-x64/build/Release/iohook.node
+          cp iohook/build/Release/uiohook.so module-shortcut/build/linux-x64/module/node_modules/iohook/builds/node-v72-linux-x64/build/Release/uiohook.so
 
       - name: Build Windows x64
         if: startsWith(matrix.os, 'windows')
@@ -64,9 +67,9 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:win
           cd ../
-          mkdir -p module-shortcut/build/win-x64/shortcut/node_modules/iohook/builds/node-v72-win32-x64/build/Release
-          copy iohook/build/Release/iohook.node module-shortcut/build/win-x64/shortcut/node_modules/iohook/builds/node-v72-win32-x64/build/Release/iohook.node
-          copy iohook/build/Release/uiohook.dll module-shortcut/build/win-x64/shortcut/node_modules/iohook/builds/node-v72-win32-x64/build/Release/uiohook.dll
+          mkdir -p module-shortcut/build/win-x64/module/node_modules/iohook/builds/node-v72-win32-x64/build/Release
+          copy iohook/build/Release/iohook.node module-shortcut/build/win-x64/module/node_modules/iohook/builds/node-v72-win32-x64/build/Release/iohook.node
+          copy iohook/build/Release/uiohook.dll module-shortcut/build/win-x64/module/node_modules/iohook/builds/node-v72-win32-x64/build/Release/uiohook.dll
 
       - name: Build MacOS x64
         if: startsWith(matrix.os, 'macos')
@@ -76,48 +79,34 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:macos
           cd ../
-          mkdir -p module-shortcut/build/macos-x64/shortcut/node_modules/iohook/builds/node-v72-darwin-x64/build/Release
-          cp iohook/build/Release/iohook.node module-shortcut/build/macos-x64/shortcut/node_modules/iohook/builds/node-v72-darwin-x64/build/Release/iohook.node
-          cp iohook/build/Release/uiohook.dylib module-shortcut/build/macos-x64/shortcut/node_modules/iohook/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
+          mkdir -p module-shortcut/build/macos-x64/module/node_modules/iohook/builds/node-v72-darwin-x64/build/Release
+          cp iohook/build/Release/iohook.node module-shortcut/build/macos-x64/module/node_modules/iohook/builds/node-v72-darwin-x64/build/Release/iohook.node
+          cp iohook/build/Release/uiohook.dylib module-shortcut/build/macos-x64/module/node_modules/iohook/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
 
-      - name: Artefact Macos x64
-        if: startsWith(matrix.os, 'macos')
-        uses: actions/upload-artifact@v2
-        with:
-          name: Shortcut MacOS x64
-          path: ./module-shortcut/build/macos-x64
-
-      - name: Artefact Linux x64
-        if: startsWith(matrix.os, 'ubuntu')
-        uses: actions/upload-artifact@v2
-        with:
-          name: Shortcut Linux x64
-          path: ./module-shortcut/build/linux-x64
-
-      - name: Artefact Win x64
-        if: startsWith(matrix.os, 'windows')
-        uses: actions/upload-artifact@v2
-        with:
-          name: Shortcut Windows x64
-          path: ./module-shortcut/build/win-x64
+      - name: Copy metadata.json & config.json & generate REPO + VERSION
+        run: |
+          cp ./metadata.json ./dist/metadata.json
+          cp ./defaultConfig.json ./dist/config.json
+          echo ${{ github.repository }} > ./dist/REPO.TXT
+          echo ${{ steps.get_version.outputs.version }} > ./dist/VERSION.TXT
 
       - name: Pack Linux x64
         if: startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'ubuntu')
         run: |
           cd module-shortcut/build/linux-x64
-          npx bestzip ../../../shortcut-linux-x64.zip .
+          npx bestzip ../../../module-shortcut-linux-x64-${{ steps.get_version.outputs.version }}.zip .
 
       - name: Pack Win x64
         if: startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows')
         run: |
           cd module-shortcut/build/win-x64
-          npx bestzip ../../../shortcut-win-x64.zip .
+          npx bestzip ../../../module-shortcut-win-x64-${{ steps.get_version.outputs.version }}.zip .
 
       - name: Pack Macos x64
         if: startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'macos')
         run: |
           cd module-shortcut/build/macos-x64
-          npx bestzip ../../../shortcut-macos-x64.zip .
+          npx bestzip ../../../module-shortcut-macos-x64--${{ steps.get_version.outputs.version }}.zip .
 
       - name: Release
         uses: softprops/action-gh-release@v1
