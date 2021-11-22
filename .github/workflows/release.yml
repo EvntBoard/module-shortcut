@@ -64,7 +64,7 @@ jobs:
       - name: Copy IOHOOK Windows x64
         if: startsWith(matrix.os, 'windows')
         run: |
-          rmdir /S /Q ./module-shortcut/dist/module/builds
+          rmdir ./module-shortcut/dist/module/builds
           mkdir -p ./module-shortcut/dist/module/builds/node-v83-win32-x64/build/Release
           copy ./iohook/build/Release/iohook.node module-shortcut/dist/module/builds/node-v83-win32-x64/build/Release/iohook.node
           copy ./iohook/build/Release/uiohook.dll module-shortcut/dist/module/builds/node-v83-win32-x64/build/Release/uiohook.dll
