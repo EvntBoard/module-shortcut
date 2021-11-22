@@ -24,7 +24,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
 
       - id: get_version
         uses: battila7/get-version-action@v2
@@ -37,7 +37,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y software-properties-common libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
 
-## --branch=v0.9.3
+      ## --branch=v0.9.3
       - name: Rebuild iohook
         run: |
           git clone https://github.com/wilix-team/iohook.git iohook
@@ -55,9 +55,9 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:linux
           cd ../
-          mkdir -p module-shortcut/build/linux-x64/module/node_modules/iohook/builds/node-v72-linux-x64/build/Release
-          cp iohook/build/Release/iohook.node module-shortcut/build/linux-x64/module/node_modules/iohook/builds/node-v72-linux-x64/build/Release/iohook.node
-          cp iohook/build/Release/uiohook.so module-shortcut/build/linux-x64/module/node_modules/iohook/builds/node-v72-linux-x64/build/Release/uiohook.so
+          mkdir -p module-shortcut/build/linux-x64/module/node_modules/iohook/builds/node-v83-linux-x64/build/Release
+          cp iohook/build/Release/iohook.node module-shortcut/build/linux-x64/module/node_modules/iohook/builds/node-v83-linux-x64/build/Release/iohook.node
+          cp iohook/build/Release/uiohook.so module-shortcut/build/linux-x64/module/node_modules/iohook/builds/node-v83-linux-x64/build/Release/uiohook.so
 
       - name: Build Windows x64
         if: startsWith(matrix.os, 'windows')
@@ -67,9 +67,9 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:win
           cd ../
-          mkdir -p module-shortcut/build/win-x64/module/node_modules/iohook/builds/node-v72-win32-x64/build/Release
-          copy iohook/build/Release/iohook.node module-shortcut/build/win-x64/module/node_modules/iohook/builds/node-v72-win32-x64/build/Release/iohook.node
-          copy iohook/build/Release/uiohook.dll module-shortcut/build/win-x64/module/node_modules/iohook/builds/node-v72-win32-x64/build/Release/uiohook.dll
+          mkdir -p module-shortcut/build/win-x64/module/node_modules/iohook/builds/node-v83-win32-x64/build/Release
+          copy iohook/build/Release/iohook.node module-shortcut/build/win-x64/module/node_modules/iohook/builds/node-v83-win32-x64/build/Release/iohook.node
+          copy iohook/build/Release/uiohook.dll module-shortcut/build/win-x64/module/node_modules/iohook/builds/node-v83-win32-x64/build/Release/uiohook.dll
 
       - name: Build MacOS x64
         if: startsWith(matrix.os, 'macos')
@@ -79,9 +79,9 @@ jobs:
           yarn prebuild:x64
           yarn build:x64:macos
           cd ../
-          mkdir -p module-shortcut/build/macos-x64/module/node_modules/iohook/builds/node-v72-darwin-x64/build/Release
-          cp iohook/build/Release/iohook.node module-shortcut/build/macos-x64/module/node_modules/iohook/builds/node-v72-darwin-x64/build/Release/iohook.node
-          cp iohook/build/Release/uiohook.dylib module-shortcut/build/macos-x64/module/node_modules/iohook/builds/node-v72-darwin-x64/build/Release/uiohook.dylib
+          mkdir -p module-shortcut/build/macos-x64/module/node_modules/iohook/builds/node-v83-darwin-x64/build/Release
+          cp iohook/build/Release/iohook.node module-shortcut/build/macos-x64/module/node_modules/iohook/builds/node-v83-darwin-x64/build/Release/iohook.node
+          cp iohook/build/Release/uiohook.dylib module-shortcut/build/macos-x64/module/node_modules/iohook/builds/node-v83-darwin-x64/build/Release/uiohook.dylib
 
       - name: Copy metadata.json & config.json & generate REPO + VERSION
         run: |

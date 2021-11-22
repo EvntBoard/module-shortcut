@@ -1,5 +1,4 @@
 import { EvntComNode } from "evntcom-js/dist/node";
-import { isArray } from "lodash";
 import ioHook from "iohook";
 import { getCodeFromName } from "./utils";
 
@@ -25,7 +24,7 @@ export class ShortCutConnexion {
       host: evntBoardHost,
     });
 
-    this.evntCom.onOpen = async () => {
+    this.evntCom.on('open', async () => {
       await this.evntCom.notify("newEvent", [
         "shortcut-load",
         null,
@@ -33,10 +32,10 @@ export class ShortCutConnexion {
       ]);
 
       try {
-        if (isArray(this.keys)) {
+        if (Array.isArray(this.keys)) {
           await Promise.all(
             this.keys?.map(async (keys: string | number[]) => {
-              if (isArray(keys)) {
+              if (Array.isArray(keys)) {
                 await this.registerShortCutNumber(keys);
               } else {
                 await this.registerShortCut(keys);
@@ -48,7 +47,7 @@ export class ShortCutConnexion {
         console.log(e);
       }
       ioHook.start(false);
-    };
+    });
 
     this.evntCom.expose("registerShortCut", this.registerShortCut);
     this.evntCom.expose("unregisterShortCut", this.unregisterShortCut);
