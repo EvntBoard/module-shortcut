@@ -56,6 +56,7 @@ jobs:
       - name: Copy IOHOOK Linux x64
         if: startsWith(matrix.os, 'ubuntu')
         run: |
+          rm -rf module-shortcut/dist/module/builds
           mkdir -p module-shortcut/dist/module/builds/node-v83-linux-x64/build/Release
           cp iohook/build/Release/iohook.node module-shortcut/dist/module/builds/node-v83-linux-x64/build/Release/iohook.node
           cp iohook/build/Release/uiohook.so module-shortcut/dist/module/builds/node-v83-linux-x64/build/Release/uiohook.so
@@ -63,6 +64,7 @@ jobs:
       - name: Copy IOHOOK Windows x64
         if: startsWith(matrix.os, 'windows')
         run: |
+          rmdir module-shortcut/dist/module/builds /s /q
           mkdir -p module-shortcut/dist/module/builds/node-v83-win32-x64/build/Release
           copy iohook/build/Release/iohook.node module-shortcut/dist/module/builds/node-v83-win32-x64/build/Release/iohook.node
           copy iohook/build/Release/uiohook.dll module-shortcut/dist/module/builds/node-v83-win32-x64/build/Release/uiohook.dll
@@ -70,6 +72,7 @@ jobs:
       - name: Copy IOHOOK MacOS x64
         if: startsWith(matrix.os, 'macos')
         run: |
+          rm -rf module-shortcut/dist/module/builds
           mkdir -p module-shortcut/dist/module/builds/node-v83-darwin-x64/build/Release
           cp iohook/build/Release/iohook.node module-shortcut/dist/module/builds/node-v83-darwin-x64/build/Release/iohook.node
           cp iohook/build/Release/uiohook.dylib module-shortcut/dist/module/builds/node-v83-darwin-x64/build/Release/uiohook.dylib
