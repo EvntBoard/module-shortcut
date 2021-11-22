@@ -76,10 +76,10 @@ jobs:
 
       - name: Copy metadata.json & config.json & generate REPO + VERSION
         run: |
-          cp ./metadata.json ./dist/metadata.json
-          cp ./defaultConfig.json ./dist/config.json
-          echo ${{ github.repository }} > ./dist/REPO.TXT
-          echo ${{ steps.get_version.outputs.version }} > ./dist/VERSION.TXT
+          cp ./module-shortcut/metadata.json ./module-shortcut/dist/metadata.json
+          cp ./module-shortcut/defaultConfig.json ./module-shortcut/dist/config.json
+          echo ${{ github.repository }} > ./module-shortcut/dist/REPO.txt
+          echo ${{ steps.get_version.outputs.version }} > ./module-shortcut/dist/VERSION.txt
 
       - name: Pack Linux x64
         if: startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'ubuntu')
