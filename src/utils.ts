@@ -1,5 +1,4 @@
 import os from "os";
-import { findKey } from "lodash";
 import keycodeNamesWin from "./keycodes/win32";
 import keycodeNamesMac from "./keycodes/darwin";
 import keycodeNamesLinux from "./keycodes/linux";
@@ -20,10 +19,13 @@ export const getCurrentLayout = (): { [key: number]: string } => {
 
 export const getCodeFromName = (keyName: string): number => {
   const layout = getCurrentLayout();
-  return parseInt(
-    findKey(layout, (value) => value === keyName),
-    10
-  );
+  const layoutKey = Object.entries(layout).find(([ key, value ]) => {
+    return value === keyName
+  })
+  if (layoutKey) {
+    return parseInt(layoutKey[0],10);
+  }
+  return undefined;
 };
 
 export const getNameFromCode = (keyCode: number): string => {
