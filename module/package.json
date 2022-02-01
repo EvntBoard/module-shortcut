@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/EvntBoard/module-shortcut#readme",
   "dependencies": {
-    "evntcom-js": "https://github.com/EvntBoard/evntcom-js.git",
+    "@evntboard/evntcom-node": "https://github.com/EvntBoard/evntcom-node.git",
     "iohook": "^0.9.3"
   },
   "devDependencies": {

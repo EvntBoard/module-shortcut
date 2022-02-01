@@ -1,9 +1,9 @@
-import { EvntComNode } from "evntcom-js/dist/node";
+import { EvntCom } from "@evntboard/evntcom-node";
 import ioHook from "iohook";
 import { getCodeFromName } from "./utils";
 
 export class ShortCutConnexion {
-  private evntCom: EvntComNode;
+  private evntCom: EvntCom;
   private name: string;
   private keys: string[] | Array<number[]>;
 
@@ -18,7 +18,7 @@ export class ShortCutConnexion {
   ) {
     this.name = name;
     this.keys = keys;
-    this.evntCom = new EvntComNode({
+    this.evntCom = new EvntCom({
       name,
       port: evntBoardPort,
       host: evntBoardHost,
